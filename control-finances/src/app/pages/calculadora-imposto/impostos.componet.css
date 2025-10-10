@@ -1,0 +1,82 @@
+.calculadora-imposto-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .calculadora-card {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  .form-calculadora {
+    margin-bottom: 24px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .form-input, .form-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .btn-calcular {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-calcular:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+  }
+  
+  .resultado-section {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 4px;
+    margin-top: 20px;
+  }
+  
+  .resultado-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  
+  .tabela-irpf {
+    margin-top: 24px;
+  }
+  
+  .tabela-imposto {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tabela-imposto th,
+  .tabela-imposto td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .tabela-imposto th {
+    background: #f8f9fa;
+    font-weight: 600;
+  }

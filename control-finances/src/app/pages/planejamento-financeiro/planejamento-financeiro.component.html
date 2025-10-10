@@ -1,0 +1,88 @@
+<div class="container">
+  <h1>Planejamento Financeiro</h1>
+
+  <!-- Estatísticas -->
+  <div class="stats">
+    <div class="stat-card">
+      <h2>Metas Ativas</h2>
+      <p>{{ totalMetasAtivas }}</p>
+    </div>
+    <div class="stat-card">
+      <h2>Total Economizado</h2>
+      <p>{{ totalEconomizado | currency:'BRL' }}</p>
+    </div>
+    <div class="stat-card">
+      <h2>Orçamentos Criados</h2>
+      <p>{{ totalOrcamentos }}</p>
+    </div>
+  </div>
+
+  <!-- Seção de Orçamentos -->
+  <div class="section">
+    <h2>Orçamentos Mensais</h2>
+    <div class="form-container">
+      <select [(ngModel)]="categoriaOrcamento">
+        <option value="" disabled>Selecione a Categoria</option>
+        <option value="moradia">Moradia</option>
+        <option value="alimentacao">Alimentação</option>
+        <option value="transporte">Transporte</option>
+        <option value="lazer">Lazer</option>
+        <option value="saude">Saúde</option>
+        <option value="outros">Outros</option>
+      </select>
+      <input type="number" [(ngModel)]="limiteOrcamento" placeholder="Limite do Orçamento">
+      <input type="number" [(ngModel)]="alertaOrcamento" placeholder="% de Alerta">
+      <button (click)="adicionarOrcamento()">Adicionar Orçamento</button>
+    </div>
+    <div class="list">
+      <div *ngFor="let orcamento of orcamentos" class="list-item">
+        <span>{{ getNomeCategoriaOrcamento(orcamento.categoria) }} - {{ orcamento.mes }}</span>
+        <span>Limite: {{ orcamento.limite | currency:'BRL' }}</span>
+        <span>Gasto: {{ orcamento.gastoAtual | currency:'BRL' }}</span>
+        <button (click)="removerOrcamento(orcamento.id)">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção de Metas Financeiras -->
+  <div class="section">
+    <h2>Metas Financeiras</h2>
+    <div class="form-container">
+      <input type="text" [(ngModel)]="nomeMeta" placeholder="Nome da Meta">
+      <input type="text" [(ngModel)]="categoriaMeta" placeholder="Categoria">
+      <input type="number" [(ngModel)]="valorTotalMeta" placeholder="Valor Total">
+      <input type="number" [(ngModel)]="valorAtualMeta" placeholder="Valor Atual">
+      <input type="month" [(ngModel)]="dataAlvoMeta">
+      <button (click)="adicionarMeta()">Adicionar Meta</button>
+    </div>
+    <div class="list">
+      <div *ngFor="let meta of metas" class="list-item">
+        <span>{{ meta.nome }} ({{ meta.categoria }})</span>
+        <span>{{ meta.valorAtual | currency:'BRL' }} / {{ meta.valorTotal | currency:'BRL' }}</span>
+        <span>Aporte Mensal: {{ meta.aporteMensalNecessario | currency:'BRL' }}</span>
+        <button (click)="removerMeta(meta.id)">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção de Projeção de Investimentos -->
+  <div class="section">
+    <h2>Projeção de Investimentos</h2>
+    <div class="form-container">
+      <input type="number" [(ngModel)]="valorInicialProjecao" placeholder="Valor Inicial">
+      <input type="number" [(ngModel)]="aporteMensal" placeholder="Aporte Mensal">
+      <input type="number" [(ngModel)]="taxaJuros" placeholder="Taxa de Juros Anual (%)">
+      <input type="number" [(ngModel)]="periodoProjecao" placeholder="Período (meses)">
+      <button (click)="calcularProjecao()">Calcular Projeção</button>
+    </div>
+    <div *ngIf="resultadoProjecao" class="projection-result">
+      <h3>Resultado da Projeção</h3>
+      <p>Valor Final: {{ resultadoProjecao.valorFinal | currency:'BRL' }}</p>
+      <ul>
+        <li *ngFor="let item of resultadoProjecao.tabela">
+          Mês {{ item.mes }}: {{ item.saldo | currency:'BRL' }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

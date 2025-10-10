@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div>
+                <h2 style="color: white; border: none; margin-bottom: 5px;">Olá, {{ nomeUsuario }}! 👋</h2>
+                <p style="opacity: 0.9;">Bem-vindo ao seu Dashboard Financeiro.</p>
+                <p style="font-size: 0.9rem; margin-top: 10px;">Último acesso: <span id="ultimoAcesso">{{ ultimoAcesso }}</span></p>
+            </div>
+            <div style="text-align: right; margin-top: 10px;">
+                <p style="font-size: 0.9rem; margin-bottom: 5px;">Mês Atual:</p>
+                <h3 style="color: #ffeb3b; font-size: 1.5rem;">{{ mesAtualFormatado }}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2> Resumo do Mês ({{ mesAtualFormatado }})</h2>
+        <div class="stats-container">
+            <div class="stat-card" style="border-left: 5px solid var(--success);">
+                <div class="stat-label"> Receitas</div>
+                <div class="stat-value" style="color: var(--success);">{{ receitas | currency:'BRL':'symbol':'1.2-2':'pt' }}</div>
+            </div>
+            <div class="stat-card" style="border-left: 5px solid var(--accent);">
+                <div class="stat-label"> Despesas</div>
+                <div class="stat-value" style="color: var(--accent);">{{ despesas | currency:'BRL':'symbol':'1.2-2':'pt' }}</div>
+            </div>
+            <div class="stat-card" [ngStyle]="{'border-left.px': 5, 'border-left-style': 'solid', 'border-left-color': saldo >= 0 ? 'var(--success)' : 'var(--accent)'}">
+                <div class="stat-label"> Saldo</div>
+                <div class="stat-value" [ngStyle]="{'color': saldo >= 0 ? 'var(--success)' : 'var(--accent)'}">
+                    {{ saldo | currency:'BRL':'symbol':'1.2-2':'pt' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2> Dica Financeira do Dia</h2>
+        <div id="dicaDoDia" style="font-size: 1.1rem; line-height: 1.6; color: #333;">
+            {{ dicaDoDia }}
+        </div>
+    </div>
+
+    <div class="card">
+        <h2> Ferramentas Disponíveis</h2>
+        <div class="grid-3">
+            <div class="info-item" style="cursor: pointer; transition: transform 0.3s;" routerLink="/impostos">
+                <h4>Calculadora de Impostos</h4>
+                <p>Calcule impostos para PF e PJ com precisão</p>
+            </div>
+            <div class="info-item" style="cursor: pointer; transition: transform 0.3s;" routerLink="/controlar">
+                <h4>Controle Financeiro</h4>
+                <p>Gerencie receitas e despesas</p>
+            </div>
+            <div class="info-item" style="cursor: pointer; transition: transform 0.3s;" routerLink="/planejamento">
+                <h4>Planejamento</h4>
+                <p>Defina metas e orçamentos</p>
+            </div>
+        </div>
+    </div>
+
+    </div>

@@ -1,0 +1,77 @@
+<div class="impostos-container">
+    <h2>Calculadora de Impostos</h2>
+    <div class="calculadora">
+        <!-- Conteúdo da calculadora de impostos -->
+        <div class="tipo-pessoa">
+            <button class="btn-tipo btn-pf" [class.active]="tipoPessoa === 'pf'" (click)="showSection('pf')">
+                👤 Pessoa Física
+            </button>
+            <button class="btn-tipo btn-pj" [class.active]="tipoPessoa === 'pj'" (click)="showSection('pj')">
+                🏢 Pessoa Jurídica
+            </button>
+        </div>
+
+        <div class="card pf-section" [class.active-section]="tipoPessoa === 'pf'" *ngIf="tipoPessoa === 'pf'">
+            <h2>Cálculo de Impostos - Pessoa Física (PF)</h2>
+            <p>Estime seu Imposto de Renda e INSS Mensal.</p>
+
+            <form (ngSubmit)="calcularImpostosPF()">
+                <div class="form-group">
+                    <label for="pfRenda">Renda Mensal Bruta (R$):</label>
+                    <input type="number" id="pfRenda" name="pfRenda" [(ngModel)]="pfRenda" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pfDependentes">Número de Dependentes:</label>
+                    <input type="number" id="pfDependentes" name="pfDependentes" [(ngModel)]="pfDependentes" min="0"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pfPrevidencia">Contribuição Previdenciária Privada (R$):</label>
+                    <input type="number" id="pfPrevidencia" name="pfPrevidencia" [(ngModel)]="pfPrevidencia" step="0.01"
+                        min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="pfDespesas">Outras Despesas Dedutíveis (Educação, Saúde, etc.) (R$):</label>
+                    <input type="number" id="pfDespesas" name="pfDespesas" [(ngModel)]="pfDespesas" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="pfTipoRenda">Tipo de Renda:</label>
+                    <select id="pfTipoRenda" name="pfTipoRenda" [(ngModel)]="pfTipoRenda">
+                        <option value="salario">Assalariado (CLT)</option>
+                        <option value="autonomo">Autônomo (RPA/Profissional Liberal)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-pf">📊 Calcular Impostos PF</button>
+            </form>
+
+            <div id="resultadosPf" class="card result-card mt-20 fade-in" *ngIf="pfResultados.totalImpostos">
+                <div [innerHTML]="pfResultados.htmlDemonstracao"></div>
+            </div>
+        </div>
+
+        <div class="card pj-section" [class.active-section]="tipoPessoa === 'pj'" *ngIf="tipoPessoa === 'pj'">
+            <h2>Cálculo de Impostos - Pessoa Jurídica (PJ)</h2>
+            <p>Estime sua tributação de acordo com o regime (MEI, Simples Nacional, Presumido).</p>
+
+            <form (ngSubmit)="calcularImpostosPJ()">
+                <button type="submit" class="btn btn-pj">🏢 Calcular Impostos PJ</button>
+            </form>
+
+            <div id="resultadosPj" class="card result-card mt-20 fade-in" *ngIf="pjResultados.totalImpostos">
+                <div [innerHTML]="pjResultados.htmlDemonstracao"></div>
+            </div>
+        </div>
+
+        <div class="card mt-20">
+            <p><strong>⚠️ Aviso Importante:</strong> Esta calculadora fornece estimativas com base em alíquotas médias e
+                legislação vigente.</p>
+            <p>Para cálculos precisos e planejamento tributário adequado, consulte sempre um contador profissional.</p>
+        </div>
+
+    </div>
+</div>

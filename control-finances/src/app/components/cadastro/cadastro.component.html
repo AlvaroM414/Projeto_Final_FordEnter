@@ -1,0 +1,55 @@
+<div class="cadastro-container">
+    <div class="cadastro-left">
+        <h1>Crie sua Conta</h1>
+        <p>Comece a controlar suas finanças hoje mesmo de forma simples e eficaz.</p>
+        <img src="assets/img/finance_graphic.svg" alt="Gráfico Financeiro" class="icon-illustration">
+        <p>Junte-se a milhares de usuários que já planejam o futuro financeiro.</p>
+    </div>
+    
+    <div class="cadastro-right">
+        <h2>Cadastro Gratuito</h2>
+        <form (ngSubmit)="fazerCadastro()" #cadastroForm="ngForm">
+            <div class="form-group-login">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" name="nome" [(ngModel)]="nome" placeholder="Seu nome" required>
+            </div>
+            
+            <div class="form-group-login">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="Seu e-mail" required>
+            </div>
+
+            <div class="form-group-login">
+                <label for="senha">Crie uma Senha</label>
+                <input type="password" id="senha" name="senha" [(ngModel)]="senha" (input)="verificarForcaSenha()" placeholder="Mínimo 6 caracteres" required minlength="6">
+            </div>
+
+            <div class="password-strength">
+                <div class="strength-bar-container">
+                    <div class="strength-bar" [style.width]="forcaSenha.width" [style.background]="forcaSenha.color"></div>
+                </div>
+                <div class="strength-text" [style.color]="forcaSenha.color">{{ forcaSenha.label }}</div>
+            </div>
+            
+            <div class="form-group-login">
+                <label for="confirmaSenha">Confirme a Senha</label>
+                <input type="password" id="confirmaSenha" name="confirmaSenha" [(ngModel)]="confirmaSenha" placeholder="Repita a senha" required>
+            </div>
+
+            <div class="terms-checkbox">
+                <input type="checkbox" id="aceitarTermos" name="aceitarTermos" [(ngModel)]="aceitarTermos" required>
+                <label for="aceitarTermos">
+                    Eu li e aceito os 
+                    <a href="#" (click)="mostrarTermos(); $event.preventDefault()">Termos de Uso</a> e 
+                    <a href="#" (click)="mostrarPrivacidade(); $event.preventDefault()">Política de Privacidade</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-login" [disabled]="!cadastroForm.valid || senha !== confirmaSenha">Cadastrar</button>
+        </form>
+
+        <div class="signup-link">
+            Já tem uma conta? <a routerLink="/login">Faça Login</a>
+        </div>
+    </div>
+</div>

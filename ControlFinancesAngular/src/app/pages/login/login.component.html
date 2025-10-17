@@ -1,0 +1,23 @@
+<div class="container" style="max-width: 400px; margin-top: 10vh;">
+    <div class="card">
+        <h2 class="text-center">Acesso ao ControlFinances</h2>
+        
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+        <form (ngSubmit)="login()">
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" [(ngModel)]="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" [(ngModel)]="senha" name="senha" required>
+            </div>
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+
+        <p class="text-center mt-20">
+            Não tem conta? <a routerLink="/cadastro">Cadastre-se</a>
+        </p>
+    </div>
+</div>

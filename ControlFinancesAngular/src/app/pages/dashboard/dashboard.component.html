@@ -1,0 +1,168 @@
+<div class="container">
+    <!-- Boas-vindas -->
+    <div class="card fade-in" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div>
+                <h2 style="color: white; border: none; margin-bottom: 10px;">Olá, {{ nomeUsuario }}! 👋</h2>
+                <p style="opacity: 0.9; margin: 0;">Bem-vindo ao seu painel de controle financeiro</p>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.9rem; opacity: 0.8;">Último acesso</div>
+                <div style="font-size: 1.1rem; font-weight: bold;">{{ currentUser?.ultimoAcesso | date:'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico Receitas vs. Despesas -->
+    <div class="card fade-in">
+        <h2>📈 Receitas vs. Despesas (Mês)</h2>
+        <div style="height: 300px;">
+            <app-chart 
+                [chartType]="barChartType" 
+                [chartData]="(revenueExpenseChartData$ | async)!"
+                [chartOptions]="barChartOptions"
+                *ngIf="(revenueExpenseChartData$ | async) as chartData and chartData.data.length > 0"
+            ></app-chart>
+            <p *ngIf="!(revenueExpenseChartData$ | async)" class="instruction">Carregando dados do gráfico...</p>
+        </div>
+    </div>
+
+    <!-- Resumo Financeiro -->
+    <div class="card fade-in" *ngIf="summary$ | async as summary">
+        <h2>📊 Resumo Financeiro do Mês</h2>
+        <div class="stats-container">
+            <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white;">
+                <div class="stat-label" style="color: white; opacity: 0.9;">💰 Total de Receitas</div>
+                <div class="stat-value" style="color: white;">{{ formatCurrency(summary.totalReceitas) }}</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white;">
+                <div class="stat-label" style="color: white; opacity: 0.9;">💸 Total de Despesas</div>
+                <div class="stat-value" style="color: white;">{{ formatCurrency(summary.totalDespesas) }}</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="stat-label" style="color: white; opacity: 0.9;">📈 Saldo do Mês</div>
+                <div class="stat-value" style="color: white;">{{ formatCurrency(summary.saldo) }}</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                <div class="stat-label" style="color: white; opacity: 0.9;">📋 Transações</div>
+                <div class="stat-value" style="color: white;">{{ summary.transacoesMes }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="card fade-in">
+        <h2>⚡ Ações Rápidas</h2>
+        <div class="grid-3">
+            <button class="btn btn-success" [routerLink]="['/controlar']">
+                💰 Adicionar Receita
+            </button>
+            <button class="btn btn-danger" [routerLink]="['/controlar']">
+                💸 Adicionar Despesa
+            </button>
+            <button class="btn btn-warning" [routerLink]="['/planejamento']">
+                🎯 Criar Meta
+            </button>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Metas em Andamento -->
+        <div class="card fade-in">
+            <h2>🎯 Metas em Andamento</h2>
+            <div id="dashMetas">
+                <div *ngIf="(goals$ | async) as goals">
+                    <div *ngIf="goals.length === 0" style="text-align: center; color: #7f8c8d; padding: 20px;">
+                        Nenhuma meta cadastrada ainda.
+                    </div>
+                    <div *ngIf="goals.length > 0" style="display: grid; gap: 15px;">
+                        <div *ngFor="let meta of goals" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid var(--secondary);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <strong>{{ meta.nome }}</strong>
+                                <span style="color: var(--secondary); font-weight: bold;">{{ (meta.valorAtual / meta.valor * 100) | number:'1.1-1' }}%</span>
+                            </div>
+                            <div style="background: #ddd; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
+                                <div [style.background]="'var(--secondary)'" style="height: 100%; transition: width 0.3s;" [style.width.%]="meta.valorAtual / meta.valor * 100"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #7f8c8d;">
+                                <span>{{ formatCurrency(meta.valorAtual) }} de {{ formatCurrency(meta.valor) }}</span>
+                                <span>Faltam {{ formatCurrency(meta.valor - meta.valorAtual) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <a [routerLink]="['/planejamento']" class="btn btn-small">Ver Todas as Metas</a>
+            </div>
+        </div>
+
+        <!-- Gráfico Distribuição de Despesas -->
+        <div class="card fade-in">
+            <h2>📊 Distribuição de Despesas por Categoria (Mês)</h2>
+            <div style="height: 300px;">
+                <app-chart 
+                    [chartType]="doughnutChartType" 
+                    [chartData]="(expenseDistributionChartData$ | async)!"
+                    [chartOptions]="doughnutChartOptions"
+                    *ngIf="(expenseDistributionChartData$ | async) as chartData and chartData.data.length > 0"
+                ></app-chart>
+                <p *ngIf="!(expenseDistributionChartData$ | async)" class="instruction">Carregando dados do gráfico...</p>
+                <p *ngIf="(expenseDistributionChartData$ | async) as chartData and chartData.data.length === 0" class="instruction">Nenhuma despesa registrada neste mês para gerar o gráfico.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status dos Orçamentos -->
+    <div class="card fade-in">
+        <h2>💼 Status dos Orçamentos</h2>
+        <div id="dashOrcamentos">
+            <div *ngIf="(budgets$ | async) as budgets">
+                <div *ngIf="budgets.length === 0" style="text-align: center; color: #7f8c8d; padding: 20px;">
+                    Nenhum orçamento definido para este mês.
+                </div>
+                <div *ngIf="budgets.length > 0" class="grid-3" style="gap: 15px;">
+                    <div *ngFor="let orc of budgets" class="fade-in" style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">{{ getIconeCategoria(orc.categoria) }}</div>
+                        <div style="font-weight: bold; margin-bottom: 8px;">{{ getNomeCategoria(orc.categoria) }}</div>
+                        <div style="background: #ddd; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
+                            <div [style.background]="'var(--' + getBudgetStatus(orc).status + ')'" style="height: 100%;" [style.width.%]="getBudgetStatus(orc).percentual"></div>
+                        </div>
+                        <div [style.color]="'var(--' + getBudgetStatus(orc).status + ')'" style="font-size: 0.9rem; font-weight: bold;">
+                            {{ getBudgetStatus(orc).percentual | number:'1.1-1' }}%
+                        </div>
+                        <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 5px;">
+                            {{ formatCurrency(orc.gasto) }} / {{ formatCurrency(orc.limite) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <a [routerLink]="['/planejamento']" class="btn btn-small">Gerenciar Orçamentos</a>
+        </div>
+    </div>
+
+    <!-- Dicas Financeiras e Ferramentas (Simplificado) -->
+    <div class="grid-2">
+        <div class="card fade-in" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+            <h2>💡 Dica Financeira do Dia</h2>
+            <div style="font-size: 1.1rem; line-height: 1.6; color: #333;">
+                A disciplina financeira é um hábito que se constrói dia após dia!
+            </div>
+        </div>
+        <div class="card fade-in">
+            <h2>🛠️ Ferramentas Disponíveis</h2>
+            <div class="grid-3" style="grid-template-columns: 1fr 1fr;">
+                <div class="info-item" [routerLink]="['/controlar']" style="cursor: pointer; transition: transform 0.3s;">
+                    <h4>📊 Controle Financeiro</h4>
+                    <p>Gerencie receitas e despesas</p>
+                </div>
+                <div class="info-item" [routerLink]="['/planejamento']" style="cursor: pointer; transition: transform 0.3s;">
+                    <h4>🎯 Planejamento</h4>
+                    <p>Defina metas e orçamentos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

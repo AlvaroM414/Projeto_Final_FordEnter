@@ -1,0 +1,130 @@
+<div class="container">
+    <h1 class="page-title">🎯 Planejamento Financeiro - Metas e Orçamentos</h1>
+
+    <div class="grid-2">
+        <!-- Metas -->
+        <div class="card fade-in">
+            <h2>Gestão de Metas</h2>
+            
+            <!-- Formulário de Nova Meta -->
+            <form (ngSubmit)="adicionarMeta()" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+                <h4>Nova Meta</h4>
+                <div class="form-group">
+                    <label for="nomeMeta">Nome:</label>
+                    <input type="text" id="nomeMeta" [(ngModel)]="novaMeta.nome" name="nomeMeta" required>
+                </div>
+                <div class="form-group">
+                    <label for="valorMeta">Valor Alvo:</label>
+                    <input type="number" id="valorMeta" [(ngModel)]="novaMeta.valor" name="valorMeta" required min="0.01" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="dataAlvo">Data Alvo:</label>
+                    <input type="date" id="dataAlvo" [(ngModel)]="novaMeta.dataAlvo" name="dataAlvo" required>
+                </div>
+                <button type="submit" class="btn btn-warning">Criar Meta</button>
+            </form>
+
+            <!-- Lista de Metas -->
+            <h4>Metas Cadastradas</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Meta</th>
+                            <th>Alvo</th>
+                            <th>Progresso</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let meta of goals$ | async">
+                            <td>
+                                <strong>{{ meta.nome }}</strong><br>
+                                <small>Até: {{ meta.dataAlvo | date:'dd/MM/yyyy' }}</small>
+                            </td>
+                            <td>{{ formatCurrency(meta.valor) }}</td>
+                            <td>
+                                <div style="font-size: 0.8rem; margin-bottom: 5px;">{{ (meta.valorAtual / meta.valor * 100) | number:'1.1-1' }}%</div>
+                                <div style="background: #ddd; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background: var(--warning); height: 100%;" [style.width.%]="meta.valorAtual / meta.valor * 100"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-small btn-danger" (click)="excluirMeta(meta.id)">Excluir</button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="(goals$ | async)?.length === 0">
+                            <td colspan="4" class="text-center">Nenhuma meta cadastrada.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Orçamentos -->
+        <div class="card fade-in">
+            <h2>Gestão de Orçamentos</h2>
+
+            <!-- Formulário de Novo Orçamento -->
+            <form (ngSubmit)="adicionarOrcamento()" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+                <h4>Novo Orçamento</h4>
+                <div class="form-group">
+                    <label for="mesOrcamento">Mês:</label>
+                    <input type="month" id="mesOrcamento" [(ngModel)]="novoOrcamento.mes" name="mesOrcamento" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoriaOrcamento">Categoria:</label>
+                    <select id="categoriaOrcamento" [(ngModel)]="novoOrcamento.categoria" name="categoriaOrcamento" required>
+                        <option *ngFor="let cat of categoriasDespesa" [value]="cat.value">{{ cat.label }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="limiteOrcamento">Limite de Gasto:</label>
+                    <input type="number" id="limiteOrcamento" [(ngModel)]="novoOrcamento.limite" name="limiteOrcamento" required min="0.01" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="alertaOrcamento">Alerta (%) (Ex: 80):</label>
+                    <input type="number" id="alertaOrcamento" [(ngModel)]="novoOrcamento.alerta" name="alertaOrcamento" required min="1" max="100">
+                </div>
+                <button type="submit" class="btn btn-primary">Criar Orçamento</button>
+            </form>
+
+            <!-- Lista de Orçamentos -->
+            <h4>Orçamentos Cadastrados</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mês/Categoria</th>
+                            <th>Limite</th>
+                            <th>Gasto</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let orc of budgets$ | async">
+                            <td>
+                                <strong>{{ getNomeCategoria(orc.categoria) }}</strong><br>
+                                <small>{{ orc.mes }}</small>
+                            </td>
+                            <td>{{ formatCurrency(orc.limite) }}</td>
+                            <td>{{ formatCurrency(orc.gasto) }}</td>
+                            <td>
+                                <div [style.color]="'var(--' + getBudgetStatus(orc).status + ')'">
+                                    {{ getBudgetStatus(orc).percentual | number:'1.1-1' }}%
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-small btn-danger" (click)="excluirOrcamento(orc.id)">Excluir</button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="(budgets$ | async)?.length === 0">
+                            <td colspan="5" class="text-center">Nenhum orçamento cadastrado.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

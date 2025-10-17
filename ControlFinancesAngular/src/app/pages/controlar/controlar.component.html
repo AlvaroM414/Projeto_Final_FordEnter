@@ -1,0 +1,81 @@
+<div class="container">
+    <h1 class="page-title">📊 Controle Financeiro - Transações</h1>
+
+    <div class="grid-2">
+        <!-- Formulário de Nova Transação -->
+        <div class="card fade-in">
+            <h2>Adicionar Nova Transação</h2>
+            <form (ngSubmit)="adicionarTransacao()">
+                <div class="form-group">
+                    <label for="tipo">Tipo:</label>
+                    <select id="tipo" [(ngModel)]="novaTransacao.tipo" name="tipo" required>
+                        <option value="receita">Receita</option>
+                        <option value="despesa">Despesa</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="valor">Valor:</label>
+                    <input type="number" id="valor" [(ngModel)]="novaTransacao.valor" name="valor" required min="0.01" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label for="descricao">Descrição:</label>
+                    <input type="text" id="descricao" [(ngModel)]="novaTransacao.descricao" name="descricao" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="data">Data:</label>
+                    <input type="date" id="data" [(ngModel)]="novaTransacao.data" name="data" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="categoria">Categoria:</label>
+                    <select id="categoria" [(ngModel)]="novaTransacao.categoria" name="categoria" required>
+                        <option *ngFor="let cat of categorias" [value]="cat.value" [disabled]="(novaTransacao.tipo === 'receita' && cat.value !== 'salario' && cat.value !== 'extra' && cat.value !== 'outros') || (novaTransacao.tipo === 'despesa' && (cat.value === 'salario' || cat.value === 'extra'))">
+                            {{ cat.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn" [ngClass]="{'btn-success': novaTransacao.tipo === 'receita', 'btn-danger': novaTransacao.tipo === 'despesa'}">
+                    Adicionar {{ novaTransacao.tipo === 'receita' ? 'Receita' : 'Despesa' }}
+                </button>
+            </form>
+        </div>
+
+        <!-- Lista de Transações -->
+        <div class="card fade-in">
+            <h2>Últimas Transações</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let transacao of transactions$ | async" [ngClass]="{'text-success': transacao.tipo === 'receita', 'text-danger': transacao.tipo === 'despesa'}">
+                            <td>{{ transacao.data | date:'dd/MM/yyyy' }}</td>
+                            <td>{{ transacao.tipo === 'receita' ? 'Receita' : 'Despesa' }}</td>
+                            <td>{{ transacao.descricao }}</td>
+                            <td>{{ getNomeCategoria(transacao.categoria) }}</td>
+                            <td>{{ formatCurrency(transacao.valor) }}</td>
+                            <td>
+                                <button class="btn btn-small btn-danger" (click)="excluirTransacao(transacao.id)">Excluir</button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="(transactions$ | async)?.length === 0">
+                            <td colspan="6" class="text-center">Nenhuma transação registrada.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

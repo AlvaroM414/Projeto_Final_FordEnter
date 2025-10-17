@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="card fade-in">
+    <h2>Cálculo de Impostos</h2>
+
+    <div class="form-group">
+      <label for="tipoPessoa">Tipo de Pessoa:</label>
+      <select id="tipoPessoa" [(ngModel)]="tipoPessoa" class="form-control">
+        <option value="PF">Pessoa Física (PF)</option>
+        <option value="PJ">Pessoa Jurídica (PJ)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="rendaBruta">Renda Bruta (R$):</label>
+      <input type="number" id="rendaBruta" [(ngModel)]="rendaBruta" class="form-control" placeholder="Informe a renda bruta">
+    </div>
+
+    <div class="form-group" *ngIf="tipoPessoa === 'PF'">
+      <label for="deducoes">Deduções (R$):</label>
+      <input type="number" id="deducoes" [(ngModel)]="deducoes" class="form-control" placeholder="Informe as deduções (ex: dependentes, saúde)">
+    </div>
+
+    <button class="btn btn-primary" (click)="calcularImposto()">Calcular Imposto</button>
+
+    <div *ngIf="impostoCalculado !== null" class="result-box fade-in">
+      <h3>Resultado do Cálculo</h3>
+      <p>Imposto Estimado: <span class="result-value">{{ formatCurrency(impostoCalculado) }}</span></p>
+      <h4>Detalhes do Cálculo:</h4>
+      <ul>
+        <li *ngFor="let detalhe of detalhesCalculo">{{ detalhe }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
